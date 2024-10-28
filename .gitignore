@@ -1,2 +1,4 @@
 
 *.tres
+*.csv#
+/mods
