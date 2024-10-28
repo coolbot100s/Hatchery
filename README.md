@@ -23,7 +23,7 @@ Hatchery will generate the structure and manifest files for your mod, you just h
 
 ## What can Hatchery not do?  
 
-Hatchery can not export your mod for you, make sure to follow the instructions provided by GDWeave.  
+Hatchery can not export your mod's `.pck` for you, make sure to follow the instructions provided by GDWeave.  
 
 ## How do I use Hatchery?
 
