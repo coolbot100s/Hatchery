@@ -1,8 +1,8 @@
 # Hatchery  
 
 Hatchery is a no-code tool for creating your own [WebFishing](https://webfishing.pro) [GDWeave](https://github.com/NotNite/GDWeave) mods!  
-Currently a Python script, this project is in early development and will likely change forms eventually, likely a executable file made with GoDot.  
-Check out [FishingExpanded](https://github.com/coolbot100s/FishingExpanded), for an example of a project created with Hatchery!
+Currently a [Python](https://www.python.org) script, this project is in early development and will change forms eventually, likely an executable file made with Godot.  
+Check out [FishingExpanded](https://github.com/coolbot100s/FishingExpanded), for an example of a project created with Hatchery!  
 
 ## What can Hatchery do?
 
@@ -15,7 +15,7 @@ Check out [FishingExpanded](https://github.com/coolbot100s/FishingExpanded), for
 ### New Fish
 
 Thanks to [Lure](https://github.com/Sulayre/WebfishingLure), adding new fish to the game is already pretty simple, with Hatchery you can add the data you want for your fish to a spreadsheet and have as many as you want created all at once!  
-Note that the example `input.csv` already filters out the data you probably don't want to modify, but if you want to make your fish even more exciting, simply add a collumn for the relavent data, Hatchery will handle the rest.  
+Note that the example `input.csv` already filters out the data you probably don't want to modify, but if you want to make your fish even more exciting, simply add a collumn for the relevant data, Hatchery will handle the rest.  
 
 ### Mod files
 
@@ -24,6 +24,11 @@ Hatchery will generate the structure and manifest files for your mod, you just h
 ## What can Hatchery not do?  
 
 Hatchery can not export your mod for you, make sure to follow the instructions provided by GDWeave.  
+
+## How do I use Hatchery?
+
+Simply download or clone this repository, and run `Hatchery.py`, your terminal will guide you through the rest.  
+If you want to use a `.csv` file to create fish in bulk, you can edit the one provided, same for generating your mod's info from a `.json`  
 
 ## Links
 
