@@ -2,7 +2,7 @@
 
 Hatchery is a no-code tool for creating your own [WebFishing](https://webfishing.pro) [GDWeave](https://github.com/NotNite/GDWeave) mods!  
 Currently a [Python](https://www.python.org) script, this project is in early development and will change forms eventually, likely an executable file made with Godot.  
-Check out [FishingExpanded](https://github.com/coolbot100s/FishingExpanded), for an example of a project created with Hatchery!  
+Check out [Fishing Expanded](https://github.com/coolbot100s/FishingExpanded), for an example of a project created with Hatchery!  
 
 ## What can Hatchery do?
 
