@@ -11,7 +11,7 @@ default_info_dir = current_directory + "\\modinfo.json"
 default_example_image_dir = current_directory + "\\example_fish.png"
 
 hatchery_link = "https://github.com/coolbot100s/Hatchery"
-hatchery_version = "1.0.6"
+hatchery_version = "1.0.7"
 
 default_modname = "Hatchery Custom Fish"
 default_modid = "hatcherycustomfish"
@@ -299,7 +299,7 @@ def new_fish(making_mod, modinfo):
     
 
 if __name__ == "__main__":
-    action = multi_choice("Welcome to the Hatchery, what are you here for?", ["Create a new Mod", "Create new fish"])
+    action = multi_choice(f"Welcome to the Hatchery v{hatchery_version}, what are you here for?", ["Create a new Mod", "Create new fish"])
     if action == "Create a new Mod":
         new_mod()
     else:
