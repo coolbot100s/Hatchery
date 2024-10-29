@@ -235,7 +235,7 @@ def fill_assets(modinfo, fish_list):
         print(f"Source image not found: {default_example_image_dir}")
         return
     
-    assets_dir = current_directory + f"\\mods\\{modinfo["id"]}\\assets\\"
+    assets_dir = current_directory + f"\\mods\\{modinfo["id"]}\\assets\\fish\\"
     
     for fish in fish_list:
         shutil.copy2(default_example_image_dir, assets_dir + fish + ".png")
