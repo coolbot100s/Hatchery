@@ -11,7 +11,7 @@ default_info_dir = current_directory + "\\modinfo.json"
 default_example_image_dir = current_directory + "\\example_fish.png"
 
 hatchery_link = "https://github.com/coolbot100s/Hatchery"
-hatchery_version = "1.0.1"
+hatchery_version = "1.0.2"
 
 default_modname = "Hatchery Custom Fish"
 default_modid = "hatcherycustomfish"
@@ -20,9 +20,13 @@ default_description = "An example Hatchery mod"
 default_link = hatchery_link
 default_version = hatchery_version
 
+# Format the name of the fish from the csv to something that can be used in file, so Custom Fish to custom_fish, your png should be the same.
+def format_item_name(item_name):
+    return item_name.lower().replace(" ", "_")
 
 modinfo = {
     "name": default_modname,
+    "id": format_item_name(default_modname),
     "authors": default_modauthors,
     "description": default_description,
     "link": default_link,
@@ -120,9 +124,7 @@ detect_item = {detect_item}
     with open(os.path.join(output_dir, f"{filename}.tres"), "w") as f:
         f.write(tres_content)
 
-# Format the name of the fish from the csv to something that can be used in file, so Custom Fish to custom_fish, your png should be the same.
-def format_item_name(item_name):
-    return item_name.lower().replace(" ", "_")
+
 
 def make_many_fish(input_dir, output_dir, modinfo):
     print("Generating fish")
@@ -138,7 +140,7 @@ def make_many_fish(input_dir, output_dir, modinfo):
             print("Creating " + filename)
             create_tres_file(output_dir, data, filename, modinfo["id"])
             fish_list.append(filename)
-    
+
     return fish_list
 
 
@@ -279,10 +281,11 @@ def new_fish(making_mod, modinfo):
         print("Please select a file path for the .csv file")
         input_dir = prompt_file_path(default_input_dir)
         if making_mod:
-            output_dir = current_directory + "\mods\\" + modinfo["id"] + "\scenes\\fish\\"
+            output_dir = current_directory + "\\mods\\" + modinfo["id"] + "\\scenes\\fish\\"
         else:
             print("Please select a path to output your fish files")
             output_dir = prompt_file_path(default_output_dir)
+           
             
         fish_list = make_many_fish(input_dir, output_dir, modinfo)
     else:
