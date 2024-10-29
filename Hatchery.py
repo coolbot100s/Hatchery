@@ -249,7 +249,7 @@ def new_mod():
     else:
         if action == "Answer questions":
             modinfo["name"] = input("What's the name of your mod?\n")
-            modinfo["id"] = format_item_name(modname)
+            modinfo["id"] = format_item_name(modinfo["name"])
             print("Your mod's ID will be: " + modinfo["id"])
             modinfo["authors"] = input("Who's creating this mod?\n")
             modinfo["description"] = input("Write a brief one sentnace description of your mod\n")
@@ -301,5 +301,5 @@ if __name__ == "__main__":
         new_mod()
     else:
         if action == "Create new fish":
-            new_fish(False)
+            new_fish(False, modinfo)
 
