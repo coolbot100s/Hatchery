@@ -11,7 +11,7 @@ default_info_dir = current_directory + "\\modinfo.json"
 default_example_image_dir = current_directory + "\\example_fish.png"
 
 hatchery_link = "https://github.com/coolbot100s/Hatchery"
-hatchery_version = "1.0.4"
+hatchery_version = "1.0.5"
 
 default_modname = "Hatchery Custom Fish"
 default_modid = "hatcherycustomfish"
@@ -271,7 +271,7 @@ def new_mod():
     if action == "Yes":
         fill_assets(modinfo, fish_list)
     
-    Print("Congrats on your new mod, I hope you enjoyed your time at the Hatchery!")
+    print("Congrats on your new mod, I hope you enjoyed your time at the Hatchery!")
     exit()
         
     
