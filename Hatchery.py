@@ -11,7 +11,7 @@ default_info_dir = current_directory + "\\modinfo.json"
 default_example_image_dir = current_directory + "\\example_fish.png"
 
 hatchery_link = "https://github.com/coolbot100s/Hatchery"
-hatchery_version = "1.0.7"
+hatchery_version = "1.0.8"
 
 default_modname = "Hatchery Custom Fish"
 default_modid = "hatcherycustomfish"
@@ -250,6 +250,14 @@ def new_mod():
         modinfo =  modinfo_from_json(info_dir)
     else:
         if action == "Answer questions":
+            modinfo = {
+                "name": default_modname,
+                "id": format_item_name(default_modname),
+                "authors": default_modauthors,
+                "description": default_description,
+                "link": default_link,
+                "version": default_version
+            }
             modinfo["name"] = input("What's the name of your mod?\n")
             modinfo["id"] = format_item_name(modinfo["name"])
             print("Your mod's ID will be: " + modinfo["id"])
@@ -277,6 +285,8 @@ def new_mod():
     
 def new_fish(making_mod, modinfo):
     action = multi_choice("Would you like to generate new fish from a csv file, or answer some questions?", ["I have a .csv file", "answer questions"])
+    fish_list = []
+    
     if action == "I have a .csv file":
         print("Please select a file path for the .csv file")
         input_dir = prompt_file_path(default_input_dir)
@@ -292,9 +302,7 @@ def new_fish(making_mod, modinfo):
         print("This feature is not yet supported, Sorry!")
         new_fish(making_mod, modinfo)
     
-    return fish_list
-    
-        
+    return fish_list  
         
     
 
