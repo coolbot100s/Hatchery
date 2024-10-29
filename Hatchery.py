@@ -11,7 +11,7 @@ default_info_dir = current_directory + "\\modinfo.json"
 default_example_image_dir = current_directory + "\\example_fish.png"
 
 hatchery_link = "https://github.com/coolbot100s/Hatchery"
-hatchery_version = "1.0.5"
+hatchery_version = "1.0.6"
 
 default_modname = "Hatchery Custom Fish"
 default_modid = "hatcherycustomfish"
@@ -224,7 +224,7 @@ func _ready():
 """
 
     for fish in fish_list:
-        content += f"""    Lure.add_content(ID,{fish},"mod://scenes/fish/{fish}.tres") \n"""
+        content += f"""    Lure.add_content(ID,"{fish}","mod://scenes/fish/{fish}.tres") \n"""
     
     with open(current_directory+"\\mods\\"+modinfo["id"]+"\\main.gd", "w") as file:
         file.write(content)
