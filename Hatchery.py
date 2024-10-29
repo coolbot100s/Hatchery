@@ -11,7 +11,7 @@ default_info_dir = current_directory + "\\modinfo.json"
 default_example_image_dir = current_directory + "\\example_fish.png"
 
 hatchery_link = "https://github.com/coolbot100s/Hatchery"
-hatchery_version = "1.0.0"
+hatchery_version = "1.0.1"
 
 default_modname = "Hatchery Custom Fish"
 default_modid = "hatcherycustomfish"
