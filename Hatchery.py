@@ -11,7 +11,7 @@ default_info_dir = current_directory + "\\modinfo.json"
 default_example_image_dir = current_directory + "\\example_fish.png"
 
 hatchery_link = "https://github.com/coolbot100s/Hatchery"
-hatchery_version = "1.0.3"
+hatchery_version = "1.0.4"
 
 default_modname = "Hatchery Custom Fish"
 default_modid = "hatcherycustomfish"
@@ -266,7 +266,7 @@ def new_mod():
     print("Your mod is ready to be created, now we just need to create some fish!")
     fish_list = new_fish(True, modinfo)
     create_main_gd(modinfo, fish_list)
-    os.makedirs(current_directory + f"\\mods\\{modinfo["id"]}\\assets\\", exist_ok=True)
+    os.makedirs(current_directory + f"\\mods\\{modinfo["id"]}\\assets\\fish", exist_ok=True)
     action = multi_choice("Would you like to populate your mod's assets folder with example sprites? This will ensure your assets are named correctly.", ["Yes", "No"])
     if action == "Yes":
         fill_assets(modinfo, fish_list)
