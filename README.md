@@ -16,6 +16,7 @@ Check out [Fishing Expanded](https://github.com/coolbot100s/FishingExpanded), fo
 
 Thanks to [Lure](https://github.com/Sulayre/WebfishingLure), adding new fish to the game is already pretty simple, with Hatchery you can add the data you want for your fish to a spreadsheet and have as many as you want created all at once!  
 Note that the example `input.csv` already filters out the data you probably don't want to modify, but if you want to make your fish even more exciting, simply add a collumn for the relevant data, Hatchery will handle the rest.  
+Having trouble balancing your fish? Check out [this data sheet](https://docs.google.com/spreadsheets/d/1N-uiVKMLc4itN2enzeXCH6WJ9eEUbmoc2P0GV3Dqm2k/) for easy reference!
 
 ### Mod files
 
