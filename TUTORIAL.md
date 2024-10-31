@@ -10,7 +10,7 @@ This quick guide will show you how to turn the code output by Hatchery into a `.
   - [Step 3: Adding your Hatchery files](#step-3-adding-your-hatchery-files)
   - [Step 4: Export your project](#step-4-export-your-project)
   - [Step 5: I lied, there is no step five!](#step-5-i-lied-there-is-no-step-five)
-
+  
 ### Step 1: Setup
 
 You'll need [GoDot Steam for GoDot 3.5.2](https://github.com/GodotSteam/GodotSteam/releases/tag/v3.21), download and extract `win64-g352-s158-gs321.zip` to a folder of your choice.  
@@ -24,10 +24,12 @@ Open `godotsteam.353.editor.windows.64.exe` and then click `New Project` or pres
 Select a project name and directory, I'll be using `...WebfishingModding/MyProjects/HatcheryExampleMod` for my mod `HatcheryExampleMod`  
 After a moment of loading you'll see something like this:  
 ![image](https://github.com/user-attachments/assets/490c1d35-07a9-4536-a52e-768d7638da38)  
+**Alternative Methods:** If you place the `Hatchery.py` script in the root of your new project before starting to generate your mod, you can probably skip the next step, but I reccomend reading anyways!  
 
 ### Step 3: Adding your Hatchery files  
 
-If you've already used Hatchery to generate mod files by selecting "Create a new mod" when asked, you should have a folder `mods`.   
+**Important:** Before following this step, make sure you've replaced any placeholder assets with your own!  
+If you've already used Hatchery to generate mod files by selecting "Create a new mod" when asked, you should have a folder `mods`.  
 If this doesn't apply to you, see other tutorials coming soon:tm:
 Simply drag the mods folder into the `res://` folder of your GoDot project in the bottom left FileSystem pane, like so:  
 ![image](https://github.com/user-attachments/assets/f3d8720a-6fb5-423f-95a4-67630e014425)  
@@ -48,5 +50,6 @@ Finally, click `Export PCK/Zip...` change `All Recognized` to `Godot Project Pac
 
 ### Step 5: I lied, there is no step five!  
 
-You're all done, simply return to Hatchery to finish creating your mod 💜
+You're all done, simply return to Hatchery to finish creating your mod 💜  
+If you're having trouble or this has become outdated please let me know in the web fishing channel of my [Discord Server](https://discord.gg/qxRVkGDjdJ).
   

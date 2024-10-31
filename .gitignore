@@ -1,4 +1,7 @@
 
 *.tres
 *.csv#
+*.pck
 /mods
+/builds
+*.zip
