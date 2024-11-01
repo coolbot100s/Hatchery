@@ -38,7 +38,9 @@ This type of use will have easier-to-use options soon, for now, your items will 
 Note, that `colors.csv` inputs support two additional entries used by Hatchery, `hex` and `alpha` which can be used to make editing the colors of cosmetics easier.  
 
 ### Things to avoid
-Empty cells in your `.csv` files will likely cause the generated files to be invalid.
+Empty cells in your `.csv` files will likely cause the generated files to be invalid.  
+Naming your project the same name as your id causes thunderstore building to catastrophically fail, if you want your project's name to be "ExampleMod" instead of "Example Mod" for instance, I recommend NOT generating thunderstore build files at all.  
+I will work to fix this in the next possible update.  
 
 ## What can Hatchery not do?  
 
