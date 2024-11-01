@@ -20,13 +20,29 @@ Thanks to [Lure](https://github.com/Sulayre/WebfishingLure), adding new fish to 
 Note that the example `fish.csv` already filters out the data you probably don't want to modify, but if you want to make your fish even more exciting, simply add a collumn for the relevant data, Hatchery will handle the rest.  
 Having trouble balancing your fish? Check out [this data sheet](https://docs.google.com/spreadsheets/d/1N-uiVKMLc4itN2enzeXCH6WJ9eEUbmoc2P0GV3Dqm2k/) for easy reference!
 
+### Cosmetic Colors
+Coming Soon:tm:
+
 ### Mod files
 
 Hatchery will generate the structure and manifest files for your mod, you just have to answer a few questions, or fill out the example modinfo.json.  
+Hatchery can generate ReadMe files depicting the content generated in your mod
+Hatchery can update a Changelog file, and add a logo to your project that will show up in TackleBox or your Thunderstore page
+Hatchery can automatically generate .zip archives for you to upload to Thunderstore, or to publish as GitHub releases.
+
+### Advanced Usage
+
+Technically speaking, as a consequence of how I've designed the script, you can use Hatchery to add *any* content supported by Lure and inherits [item_resource](https://github.com/coolbot100s/Hatchery/blob/main/Hatchery.py#L125) or cosmetic_resource.  
+If you'd like to use Hatchery for this purpose, simply add any of the data values you'd like to edit as a column in your csv.  
+This type of use will have easier-to-use options soon, for now, your items will still mostly be processed as if you're trying to create a fish or a cosmetic color.  
+Note, that `color.csv` inputs support two additional entries used by Hatchery, `hex` and `alpha` which can be used to make editing the colors of cosmetics easier.  
+
+### Things to avoid
+Empty cells in your `.csv` files will likely cause the generated files to be invalid.
 
 ## What can Hatchery not do?  
 
-Hatchery can not make your art for you, that's where you come in!  
+Hatchery can not make your art, or custom scripts for you, that's where you come in!  
 Hatchery can not export your mod's `.pck` for you, don't worry, it's pretty easy, check out [this quick tutorial](https://github.com/coolbot100s/Hatchery/blob/main/TUTORIAL.md)! 
 
 
