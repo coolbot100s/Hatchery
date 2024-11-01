@@ -35,7 +35,7 @@ Hatchery can automatically generate .zip archives for you to upload to Thunderst
 Technically speaking, as a consequence of how I've designed the script, you can use Hatchery to add *any* content supported by Lure and inherits [item_resource](https://github.com/coolbot100s/Hatchery/blob/main/Hatchery.py#L125) or cosmetic_resource.  
 If you'd like to use Hatchery for this purpose, simply add any of the data values you'd like to edit as a column in your csv.  
 This type of use will have easier-to-use options soon, for now, your items will still mostly be processed as if you're trying to create a fish or a cosmetic color.  
-Note, that `color.csv` inputs support two additional entries used by Hatchery, `hex` and `alpha` which can be used to make editing the colors of cosmetics easier.  
+Note, that `colors.csv` inputs support two additional entries used by Hatchery, `hex` and `alpha` which can be used to make editing the colors of cosmetics easier.  
 
 ### Things to avoid
 Empty cells in your `.csv` files will likely cause the generated files to be invalid.
