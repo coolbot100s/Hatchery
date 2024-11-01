@@ -2,5 +2,6 @@
 	"name": "Hatchery Example Mod",
     "authors": "Hatchery",
     "description": "An example Hatchery mod.",
+    "link": "https://github.com/coolbot100s/Hatchery",
     "version": "1.0.0"
 }

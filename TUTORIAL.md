@@ -40,7 +40,8 @@ If your file system looks like this, then you've done it right!
 
 Click `Project > Export...` in the top right corner of the GoDot Editor.  
 Next, `Add...` and `Windows Desktop`, unselect `Runnable`, and then under Options we're going to add GoDotSteam's custom templates.  
-These will be in the same location you put GoDotSteam in step one, select `windows-352-debug-template-64bit.exe` as your Debug template, and `windows-352-template-64bit.exe` So far, you should be looking at a screen like this:  
+These will be in the same location you put GoDotSteam in step one, select `windows-352-debug-template-64bit.exe` as your Debug template, and `windows-352-template-64bit.exe` as the Release template.  
+So far, you should be looking at a screen like this:  
 ![image](https://github.com/user-attachments/assets/5f143d26-b145-4605-9817-3b06dfca7398)  
 Now, we're going to go to the resources tab, for our Export Mode, select `Export selected resources (and dependencies)` and select your mod for export:  
 ![image](https://github.com/user-attachments/assets/57161e2b-e8ff-4b09-97be-be4d29bae09f)  
