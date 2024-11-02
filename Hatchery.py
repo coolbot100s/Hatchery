@@ -11,7 +11,7 @@ ikwid = False # Automatically run the script with the selected options... automa
 
 # Important shit
 hatchery_link = "https://github.com/coolbot100s/Hatchery"
-hatchery_version = "1.1.1"
+hatchery_version = "1.2.0"
 
 ts_supported_gd_weave = "NotNet-GDWeave-2.0.12"
 ts_supported_lure = "Sulayre-Lure-3.1.3"
@@ -23,6 +23,7 @@ fish_data = {}
 # Defaults
 current_directory = os.path.dirname(os.path.abspath(__file__))
 default_input_dir = current_directory + "\\fish.csv"
+default_color_input_dir = current_directory + "\\colors.csv"
 default_info_dir = current_directory + "\\modinfo.json"
 default_icon_dir = current_directory + "\\icon.png"
 
@@ -76,6 +77,17 @@ def unsnakeify(string):
     words = string.split("_")
     return " ".join(word.capitalize() for word in words)
 
+# I should know how ot do this properly by now, how many times have i done this, why am i still googling it.
+def hex_to_rgb_decimal(hex_color):
+    hex_color = hex_color.lstrip('#')
+    # Convert the hex string to an integer
+    hex_int = int(hex_color, 16)
+    # Extract the RGB values
+    red = (hex_int >> 16) & 255
+    green = (hex_int >> 8) & 255
+    blue = hex_int & 255
+    
+    return (round(red/255,4), round(green/255,4), round(blue/255,4))
     
 # Fish stuff
 default_fish_values = {
@@ -177,6 +189,113 @@ def make_many_fish(input_dir, output_dir, modinfo):
 
     return fish_list
 
+# Color stuff
+default_color_values = {
+
+"script": "ExtResource( 1 )",
+"name": "purple",
+"desc": "Furry!",
+"title": "",
+"icon": "ExtResource( 2 )",
+"species_alt_mesh": [],
+"main_color": "Color( 0.5490, 0.2980, 0.7568, 1 )",
+"body_pattern": [],
+"mirror_face": "true",
+"flip": "false", 
+"allow_blink": "true",
+"category": "primary_color",
+"cos_internal_id": "0",
+"in_rotation": "false",
+"chest_reward": "false",
+"cost": "10"
+}
+
+def create_color_scene(output_dir, data, filename):
+    tres_content = """[gd_resource type="Resource" load_steps=3 format=2]
+
+    [ext_resource path="res://Resources/Scripts/cosmetic_resource.gd" type="Script" id=1]
+    [ext_resource path="res://Assets/Textures/CosmeticIcons/cosmetic_icons4.png" type="Texture" id=2]
+
+    [resource]
+    script = ExtResource( 1 )
+    name = "{name}"
+    desc = "{desc}"
+    title = "{title}"
+    icon = ExtResource( 2 )
+    species_alt_mesh = [  ]
+    main_color = {main_color}
+    body_pattern = [  ]
+    mirror_face = "{mirror_face}"
+    flip = "{flip}"
+    allow_blink = "{allow_blink}"
+    category = "{category}"
+    cos_internal_id = 0
+    in_rotation = "{in_rotation}"
+    chest_reward = "{chest_reward}"
+    cost = 10""".replace("    ", "").format(**data).replace("TRUE", "true").replace("FALSE", "false").replace("Color( (", "Color( ").replace("), ", ", ")
+    
+    with open(os.path.join(output_dir, f"{filename}.tres"), "w", encoding='utf-8') as f:
+        f.write(tres_content)
+        
+def make_many_colors(input_dir, output_dir, making_mod, duplicate):
+    print("Generating colors")
+    os.makedirs(output_dir, exist_ok=True)
+    if making_mod:
+        prim_dir = output_dir
+        sec_dir = output_dir
+        prim_dir += "\\primary"
+        sec_dir += "\\secondary"
+        os.makedirs(prim_dir, exist_ok=True)
+        os.makedirs(sec_dir, exist_ok=True)
+        
+    colors_list = []
+    with open(input_dir, mode="r") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            data = {**default_color_values, **row}
+            # Convert hex color to Color format if hex is present
+            if "alpha" in data:
+                alpha = data["alpha"]
+            else:
+                alpha = "1"
+            if "hex" in data:
+                data["main_color"] = f"Color( {hex_to_rgb_decimal(data["hex"])}, {alpha} )"    
+            # Duplicate all colors that do not specify a category, one primary, one secondary
+            if duplicate and "category" not in row:
+                # Create primary color
+                data["category"] = "primary_color"
+                filename = "pcolor_" + snakeify(data["name"])
+                print("Creating " + filename)
+                if making_mod:
+                    output_dir = prim_dir
+                create_color_scene(output_dir, data, filename)
+                colors_list.append(filename)
+                
+                # Create secondary color
+                data["category"] = "secondary_color"
+                filename = "scolor_" + snakeify(data["name"])
+                print("Creating " + filename)
+                if making_mod:
+                    output_dir = sec_dir
+                create_color_scene(output_dir, data, filename)
+                colors_list.append(filename)
+            else:
+                if data["category"] == "primary_color":
+                    filename = "pcolor_" + snakeify(data["name"])
+                else:
+                    filename = "scolor_" + snakeify(data["name"])
+                if making_mod:
+                    if data["category"] == "primary_color":
+                        output_dir = prim_dir
+                    else:
+                        output_dir = sec_dir
+                print("Creating " + filename)
+                create_color_scene(output_dir, data, filename)
+                colors_list.append(filename)            
+            
+    return colors_list
+            
+            
 
 # UX stuff
 def yn(prompt): ##TODO: Remove or rework
@@ -218,7 +337,6 @@ def modinfo_from_json(info_dir):
     with open(info_dir, "r") as file:
         modinfo = json.load(file)
         
-    
     if "id" not in modinfo:
         modinfo["id"] = snakeify(modinfo["name"])
         print("Your mod's ID will be: " + modinfo["id"])   
@@ -228,7 +346,7 @@ def modinfo_from_json(info_dir):
     
     if "link" not in modinfo:
         modinfo["link"] = ""
-    
+
     return modinfo
 
 def modinfo_from_cli():
@@ -245,9 +363,10 @@ def modinfo_from_cli():
     
     return modinfo
 
-def create_mod_manifest(modinfo, builds_dir, adds_fish):
+def create_mod_manifest(modinfo, builds_dir, adds_fish, adds_colors):
     manifest_data = default_mod_manifest_data
     
+    manifest_data["Name"] = modinfo.get("name", manifest_data["Name"])
     manifest_data["Id"] = modinfo.get("id", manifest_data["Id"])
     manifest_data["PackPath"] = modinfo.get("id", manifest_data["Id"]) + ".pck"
 
@@ -258,7 +377,7 @@ def create_mod_manifest(modinfo, builds_dir, adds_fish):
     metadata["Homepage"] = modinfo.get("link", metadata["Homepage"])
 
     
-    if adds_fish:
+    if adds_fish or adds_colors:
         manifest_data["Dependencies"].append(lure_id)
     
     path = builds_dir + modinfo["id"] + "\\manifest.json"
@@ -267,7 +386,7 @@ def create_mod_manifest(modinfo, builds_dir, adds_fish):
          
     print("Mod Manifest created at " + path)
 
-def create_ts_manifest(modinfo, builds_dir, adds_fish):
+def create_ts_manifest(modinfo, builds_dir, adds_fish, adds_colors):
     manifest_data = default_ts_manafest_data
     
     manifest_data["name"] = modinfo.get("ts_name", manifest_data["name"]) 
@@ -275,7 +394,7 @@ def create_ts_manifest(modinfo, builds_dir, adds_fish):
     manifest_data["website_url"] = modinfo.get("link", "")
     manifest_data["description"] = modinfo.get("description", manifest_data["description"])
     
-    if adds_fish:
+    if adds_fish or adds_colors:
         manifest_data["dependencies"].append(ts_supported_lure)
     
     path = builds_dir + modinfo["name"] + "\\manifest.json"
@@ -301,7 +420,7 @@ This mod was made with Hatchery {hatchery_version}
         
     print("Readme created at " + path)
     
-def create_readme_md(modinfo, builds_dir, adds_fish, input_dir):
+def create_readme_md(modinfo, builds_dir, adds_fish, adds_colors, input_dir, colors_input_dir, duplicate_colors):
     content = f"""\
 ## {modinfo["name"]}  
 {modinfo["description"]}  \n
@@ -312,6 +431,11 @@ def create_readme_md(modinfo, builds_dir, adds_fish, input_dir):
 
     if adds_fish:
         content += create_fish_table(input_dir)
+    
+    content += "  \n"
+    
+    if adds_colors:
+        content += create_color_table(colors_input_dir, duplicate_colors)
 
     content += f"""\
 
@@ -325,15 +449,17 @@ This mod was created by {modinfo["authors"]} using [Hatchery]({hatchery_link}) v
     print("Readme created at " + path)
     
 def create_fish_table(input_dir):
-    fish_table_choice = multi_choice("Would you like to add info about your fish to a readme?", ["Yes, I'll add images as well!", "Yes, but no pictures.",  "No"])
+    fish_table_choice = multi_choice("Would you like to add info about your fish to a readme?", ["Yes, use my repo to add images!", "Yes, I'll add my own images.", "Yes, but no pictures.",  "No"])
     content = ""
     no_images = False
     if fish_table_choice == "No":
         return content
     elif fish_table_choice == "Yes, but no pictures.":
         no_images = True
-
-    content += f"""<details>
+    elif fish_table_choice == "Yes, use my repo to add images!":
+        print("Sorry, this feature isn't ready yet, you can still add your images manually.")
+    
+    content += """<details>
 <summary>New Fish!</summary>  \n
   \n"""
         
@@ -360,6 +486,52 @@ def create_fish_table(input_dir):
     
     return content 
 
+def create_color_table(input_dir, duplicate):
+    color_table_choice = multi_choice("Would you like to add info about your color cosmetics to a readme?", ["Yes","No"])
+    if color_table_choice == "No":
+        return ""
+#    color_table_images_choice = multi_choice("Would you like to generate color pallete images to showcase in your Readme?", ["Yes, generate images, I'll add them to the readme" , "Yes, generate images, and use my repo to add them to the readme", "No"])
+    color_table_hex_choice = multi_choice("Would you like to list the Hex codes of your colors?", ["Yes", "No"])
+    if color_table_hex_choice == "Yes":
+        add_hex = True
+        
+        content = """<details>
+<summary>New Colors!</summary>  \n
+  \n"""
+    if add_hex:
+        content += "| Name | Hex | Type |  \n"
+        content += "| --- | --- | --- |  \n"
+    
+        with open(input_dir, mode="r") as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                data = {**default_color_values, **row}
+                if duplicate:
+                    cat = "Primay & Secondary"
+                else:
+                    cat = unsnakeify(data["category"].replace("_color",""))
+                print(cat)
+                content += f"| <span style='color: {data['hex']};'>**{data['name']}** | {data['hex']} | {cat}  |  \n"
+    else:
+        content += "| Name |  Type |  \n"
+        content += "| --- | --- |  \n"
+    
+        with open(input_dir, mode="r") as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                data = {**default_color_values, **row}
+                if duplicate:
+                    cat = "Primay & Secondary"
+                else:
+                    cat = unsnakeify(data["category"].replace("_color",""))
+                content += f"| {data['name']} |  {cat}  |  \n"
+
+    content += """\n
+</details>  \n
+  """
+    
+    return content
+
 def create_changelog_md(changes, modinfo, changelog_dir, is_update):
     type = "created"
     content = ""
@@ -381,11 +553,10 @@ def create_changelog_md(changes, modinfo, changelog_dir, is_update):
 
     
     print(f"Changelog {type} at " + changelog_dir)
-    pass
+    
 
 # Ask if the author has exported their .pck first!!!!
 def zip_for_gh(modinfo, builds_dir):
-    import shutil
     source_dir = builds_dir
     output_dir = builds_dir + modinfo["id"]
     output_filename = output_dir + ".zip"
@@ -395,7 +566,6 @@ def zip_for_gh(modinfo, builds_dir):
     return output_filename
 
 def zip_for_ts(modinfo, builds_dir):
-    import shutil
     source_dir = builds_dir + modinfo["name"] 
     output_dir = builds_dir + modinfo["name"].replace(" ", "_") + f"-v{modinfo["version"]}"
     output_filename = output_dir + ".zip"
@@ -405,7 +575,7 @@ def zip_for_ts(modinfo, builds_dir):
     return output_filename
 
 # Code stuff
-def create_main_gd(modinfo, fish_list):
+def create_main_gd(modinfo, fish_list, colors_list):
     content = f"""
 # Generated by Hatchery {hatchery_version}, {hatchery_link}
 extends Node
@@ -417,6 +587,13 @@ func _ready():
     
     for fish in fish_list:
         content += f"""    Lure.add_content(ID,"{fish}","mod://scenes/fish/{fish}.tres") \n"""
+    
+    for color in colors_list:
+        if color.startswith("s"):
+            folder = "secondary"
+        else:
+            folder = "primary"
+        content += f"""    Lure.add_content(ID, "{color}", "mod://scenes/colors/{folder}/{color}.tres") \n"""
     
     path = default_mods_dir + modinfo["id"]
     os.makedirs(path, exist_ok=True)
@@ -439,6 +616,8 @@ def fill_assets(modinfo, fish_list):
 def new_mod():
     # Get metadata about the mod
     modinfo_choice = multi_choice("Would you like to fill in mod info from a file, or answer some questions?", ["I have a mod info file", "Answer questions"])
+    modinfo = {}
+    
     if modinfo_choice == "I have a mod info file":
         print("Please select a path for the .json file")
         info_dir = prompt_file_path(default_info_dir)
@@ -450,15 +629,26 @@ def new_mod():
 
     fish_list = []
     adds_fish = False
+    fish_data_dir = None
     
     add_fish_to_mod_choice = multi_choice("Would you like to add fish to your mod?", ["Yes", "No"])
     if add_fish_to_mod_choice == "Yes":
         fish_list, fish_data_dir = new_fish(True, modinfo)
         adds_fish = True
+    
+    colors_list = []
+    adds_colors = False
+    colors_input_dir = None
+    duplicate_colors = False
+        
+    add_colors_to_mod_choice = multi_choice("Would you like to add color cosmetics to your mod?", ["Yes", "No"])
+    if add_colors_to_mod_choice == "Yes":
+        colors_list, colors_input_dir, duplicate_colors = new_colors(True, modinfo)
+        adds_colors = True
         
     create_main_class_choice = multi_choice("Would you like to generate the main class of your mods code?", ["Yes", "No"])
     if create_main_class_choice == "Yes":
-        create_main_gd(modinfo, fish_list)
+        create_main_gd(modinfo, fish_list, colors_list)
     
     add_image_choice = multi_choice("Would you like to add an icon to your mod?", ["Yes, for TackleBox and Thunderstore", "Yes, only tackleBox", "Yes, only for Thunderstore", "No"])
     tb_img = False
@@ -489,15 +679,15 @@ def new_mod():
     os.makedirs(builds_dir + modinfo["id"], exist_ok=True)
     
     # Create stuff for inside the mod
-    create_mod_manifest(modinfo, builds_dir, adds_fish)
+    create_mod_manifest(modinfo, builds_dir, adds_fish, adds_colors)
     create_readme_txt(modinfo, builds_dir)
     
     # Create stuff for ts
     thunderstore_choice = multi_choice("Would you like to generate files for uploading to Thunderstore?", ["Yes", "No"])
     if thunderstore_choice == "Yes":
         os.makedirs(builds_dir + modinfo["name"] + "\\GDWeave\\", exist_ok=True)
-        create_ts_manifest(modinfo, builds_dir, adds_fish)
-        create_readme_md(modinfo, builds_dir, adds_fish, fish_data_dir)
+        create_ts_manifest(modinfo, builds_dir, adds_fish, adds_colors)
+        create_readme_md(modinfo, builds_dir, adds_fish, adds_colors, fish_data_dir, colors_input_dir, duplicate_colors)
         if ts_img:
             shutil.copy2(image_dir, builds_dir + modinfo["name"] + "\\icon.png")
         
@@ -532,9 +722,7 @@ def new_mod():
             ts_zip = zip_for_ts(modinfo, builds_dir)
             print(f"Your mod is ready to be uploaded to Thunderstore using: {ts_zip}")
     
-    print("Congrats on your new mod, I hope you enjoyed your time at the Hatchery!")
-    exit()
-        
+    print("Congrats on your new mod, I hope you enjoyed your time at the Hatchery!")      
     
 def new_fish(making_mod, modinfo): 
     fish_list = []
@@ -556,12 +744,38 @@ def new_fish(making_mod, modinfo):
     
     return fish_list, input_dir
         
-    
+def new_colors(making_mod, modinfo):
+    color_list = []
+    csv_or_cli_choice = multi_choice("Would you like to generate new colors from a csv file, or answer some questions?", ["I have a .csv file", "answer questions"])
+    if csv_or_cli_choice == "I have a .csv file":
+        print("Please select a file path for the .csv file")
+        input_dir = prompt_file_path(default_color_input_dir)
+        if making_mod:
+            output_dir = current_directory + "\\mods\\" + modinfo["id"] + "\\scenes\\colors\\"
+        else:
+            print("Please select a path to output your fish files")
+            output_dir = prompt_file_path(default_output_dir)
 
-if __name__ == "__main__":
-    action = multi_choice(f"Welcome to the Hatchery v{hatchery_version}, what are you here for?", ["Create a new Mod", "Create new fish"])
+        duplicate_choice = multi_choice("Would you like to to create matching primary and secondary colors for any color without a category?", ["Yes", "No"])
+        if duplicate_choice == "Yes":
+            duplicate = True
+        color_list = make_many_colors(input_dir, output_dir, True, duplicate)
+        
+        return color_list, input_dir, duplicate
+    else:
+        print("This feature is not yet supported, Sorry!")
+        new_colors(making_mod, modinfo)
+
+
+
+
+def main():
+    action = multi_choice(f"Welcome to the Hatchery v{hatchery_version}, what are you here for?", ["Create a new Mod", "Create new fish", "Create new colors"])
     if action == "Create a new Mod":
         new_mod()
     if action == "Create new fish":
         new_fish(False, default_modinfo)
-        
+    if action == "Create new colors":
+        new_colors(False, default_modinfo)
+
+main()
