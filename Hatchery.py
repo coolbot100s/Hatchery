@@ -366,11 +366,12 @@ def modinfo_from_cli():
 def create_mod_manifest(modinfo, builds_dir, adds_fish, adds_colors):
     manifest_data = default_mod_manifest_data
     
-    manifest_data["Name"] = modinfo.get("name", manifest_data["Name"])
+    
     manifest_data["Id"] = modinfo.get("id", manifest_data["Id"])
     manifest_data["PackPath"] = modinfo.get("id", manifest_data["Id"]) + ".pck"
 
     metadata = manifest_data["Metadata"]
+    metadata["Name"] = modinfo.get("name", metadata["Name"])
     metadata["Author"] = modinfo.get("authors", metadata["Author"])
     metadata["Description"] = modinfo.get("description", metadata["Description"])
     metadata["Version"] = modinfo.get("version", metadata["Version"])
@@ -492,6 +493,7 @@ def create_color_table(input_dir, duplicate):
         return ""
 #    color_table_images_choice = multi_choice("Would you like to generate color pallete images to showcase in your Readme?", ["Yes, generate images, I'll add them to the readme" , "Yes, generate images, and use my repo to add them to the readme", "No"])
     color_table_hex_choice = multi_choice("Would you like to list the Hex codes of your colors?", ["Yes", "No"])
+    add_hex = False
     if color_table_hex_choice == "Yes":
         add_hex = True
         
@@ -510,7 +512,8 @@ def create_color_table(input_dir, duplicate):
                     cat = "Primay & Secondary"
                 else:
                     cat = unsnakeify(data["category"].replace("_color",""))
-                print(cat)
+                if not data['hex'].startswith("#"):
+                    data['hex'] = "#" + data['hex']
                 content += f"| <span style='color: {data['hex']};'>**{data['name']}** | {data['hex']} | {cat}  |  \n"
     else:
         content += "| Name |  Type |  \n"
