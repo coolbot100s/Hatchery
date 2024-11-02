@@ -21,7 +21,8 @@ Note that the example `fish.csv` already filters out the data you probably don't
 Having trouble balancing your fish? Check out [this data sheet](https://docs.google.com/spreadsheets/d/1N-uiVKMLc4itN2enzeXCH6WJ9eEUbmoc2P0GV3Dqm2k/) for easy reference!
 
 ### Cosmetic Colors
-Coming Soon:tm:
+You can now generate cosmetics via Hatchery!  
+Cosmetic colors can be generated completely from the `colors.csv` template with just a name and a Hex Code.  
 
 ### Mod files
 
