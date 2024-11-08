@@ -170,7 +170,7 @@ def create_fish_scene(output_dir, data, filename, modid):
     detect_item = {detect_item}
     """.replace("    ", "").format(modid=modid, filename=filename, **data).replace("TRUE", "true").replace("FALSE", "false")
 
-    with open(os.path.join(output_dir, f"{filename}.tres"), "w", encoding='utf-8') as f:
+    with open(os.path.join(output_dir, f"{filename}.tres"), "w") as f:
         f.write(tres_content)
         
 def make_many_fish(input_dir, output_dir, modinfo):
