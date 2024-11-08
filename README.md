@@ -8,7 +8,7 @@ Check out [Fishing Expanded](https://github.com/coolbot100s/FishingExpanded), fo
 
 - Create functional mod files from a simple spreadsheet, no coding necessary.
 - Create mods from the command line by answering a few questions about your mod (coming soon™️)
-- Generate mod file templates including scenes and scripts.  
+- Generate mod file templates including resources and scripts.  
 - Generate asset templates to avoid misnamed assets and godot project corruption.  
 - Automatically create metadata for TackleBox, HLS, and Thunderstore.
 - Automatically generate a ReadMe file with info about the content you added to your mod.
