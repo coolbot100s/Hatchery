@@ -11,10 +11,10 @@ ikwid = False # Automatically run the script with the selected options... automa
 
 # Important shit
 hatchery_link = "https://github.com/coolbot100s/Hatchery"
-hatchery_version = "1.2.0"
+hatchery_version = "1.3.0"
 
-ts_supported_gd_weave = "NotNet-GDWeave-2.0.12"
-ts_supported_lure = "Sulayre-Lure-3.1.3"
+ts_supported_gd_weave = "NotNet-GDWeave-2.0.13"
+ts_supported_lure = "Sulayre-Lure-4.1.0"
 
 lure_id = "Sulayre.Lure"
 
@@ -24,6 +24,7 @@ fish_data = {}
 current_directory = os.path.dirname(os.path.abspath(__file__))
 default_input_dir = current_directory + "\\fish.csv"
 default_color_input_dir = current_directory + "\\colors.csv"
+default_title_input_dir = current_directory + "\\titles.csv"
 default_info_dir = current_directory + "\\modinfo.json"
 default_icon_dir = current_directory + "\\icon.png"
 
@@ -191,23 +192,22 @@ def make_many_fish(input_dir, output_dir, modinfo):
 
 # Color stuff
 default_color_values = {
-
-"script": "ExtResource( 1 )",
-"name": "purple",
-"desc": "Furry!",
-"title": "",
-"icon": "ExtResource( 2 )",
-"species_alt_mesh": [],
-"main_color": "Color( 0.5490, 0.2980, 0.7568, 1 )",
-"body_pattern": [],
-"mirror_face": "true",
-"flip": "false", 
-"allow_blink": "true",
-"category": "primary_color",
-"cos_internal_id": "0",
-"in_rotation": "false",
-"chest_reward": "false",
-"cost": "10"
+    "script": "ExtResource( 1 )",
+    "name": "purple",
+    "desc": "Furry!",
+    "title": "",
+    "icon": "ExtResource( 2 )",
+    "species_alt_mesh": [],
+    "main_color": "Color( 0.5490, 0.2980, 0.7568, 1 )",
+    "body_pattern": [],
+    "mirror_face": "true",
+    "flip": "false", 
+    "allow_blink": "true",
+    "category": "primary_color",
+    "cos_internal_id": "0",
+    "in_rotation": "false",
+    "chest_reward": "false",
+    "cost": "10"
 }
 
 def create_color_scene(output_dir, data, filename):
@@ -294,8 +294,68 @@ def make_many_colors(input_dir, output_dir, making_mod, duplicate):
                 colors_list.append(filename)            
             
     return colors_list
+
+# Title stuff
+default_title_values = {
+    "script": "ExtResource( 1 )",
+    "name": "Example Title",
+    "desc": "An Example Title from Hatchery.",
+    "title": "Example",
+    "icon": "ExtResource( 2 )",
+    "species_alt_mesh": [],
+    "main_color": "Color( 1, 1, 1, 1 )",
+    "body_pattern": [],
+    "mirror_face": "true",
+    "flip": "false", 
+    "allow_blink": "true",
+    "category": "title",
+    "cos_internal_id": "0",
+    "in_rotation": "false",
+    "chest_reward": "true",
+    "cost": "10"
+}
+
+def create_title_scene(output_dir, data, filename):
+    tres_content = """[gd_resource type="Resource" load_steps=3 format=2]
+
+    [ext_resource path="res://Resources/Scripts/cosmetic_resource.gd" type="Script" id=1] 
+    [ext_resource path="res://Assets/Textures/CosmeticIcons/cosmetic_icons62.png" type="Texture" id=2] 
+
+    [resource]
+    script = ExtResource( 1 )
+    name = "{name}"
+    desc = "{desc}"
+    title = "{title}"
+    icon = ExtResource( 2 )
+    species_alt_mesh = [  ]
+    main_color = {main_color}
+    body_pattern = [  ]
+    mirror_face = "{mirror_face}"
+    flip = "false"
+    allow_blink = "{allow_blink}"
+    category = "{category}"
+    cos_internal_id = 0
+    in_rotation = "false"
+    chest_reward = "{chest_reward}"
+    cost = 10""".replace("    ", "").format(**data).replace("TRUE", "true").replace("FALSE", "false").replace("Color( (", "Color( ").replace("), ", ", ")
+    
+    with open(os.path.join(output_dir, f"{filename}.tres"), "w") as f:
+        f.write(tres_content)
             
-            
+def make_many_titles(input_dir, output_dir, modinfo):
+    print("Generating titles")
+    os.makedirs(output_dir, exist_ok=True)
+    titles_list = []
+    with open(input_dir, mode="r") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            data = {**default_title_values, **row}
+            filename = snakeify(data["name"])
+            print("Creating " + filename)
+            create_title_scene(output_dir, data, filename)
+            titles_list.append(filename)
+
+    return titles_list            
 
 # UX stuff
 def yn(prompt): ##TODO: Remove or rework
@@ -363,7 +423,7 @@ def modinfo_from_cli():
     
     return modinfo
 
-def create_mod_manifest(modinfo, builds_dir, adds_fish, adds_colors):
+def create_mod_manifest(modinfo, builds_dir, needs_lure):
     manifest_data = default_mod_manifest_data
     
     
@@ -378,7 +438,7 @@ def create_mod_manifest(modinfo, builds_dir, adds_fish, adds_colors):
     metadata["Homepage"] = modinfo.get("link", metadata["Homepage"])
 
     
-    if adds_fish or adds_colors:
+    if needs_lure:
         manifest_data["Dependencies"].append(lure_id)
     
     path = builds_dir + modinfo["id"] + "\\manifest.json"
@@ -387,7 +447,7 @@ def create_mod_manifest(modinfo, builds_dir, adds_fish, adds_colors):
          
     print("Mod Manifest created at " + path)
 
-def create_ts_manifest(modinfo, builds_dir, adds_fish, adds_colors):
+def create_ts_manifest(modinfo, builds_dir, needs_lure, ts_dir):
     manifest_data = default_ts_manafest_data
     
     manifest_data["name"] = modinfo.get("ts_name", manifest_data["name"]) 
@@ -395,16 +455,16 @@ def create_ts_manifest(modinfo, builds_dir, adds_fish, adds_colors):
     manifest_data["website_url"] = modinfo.get("link", "")
     manifest_data["description"] = modinfo.get("description", manifest_data["description"])
     
-    if adds_fish or adds_colors:
+    if needs_lure:
         manifest_data["dependencies"].append(ts_supported_lure)
     
-    path = builds_dir + modinfo["name"] + "\\manifest.json"
+    path = builds_dir + ts_dir + "\\manifest.json"
     with open(path, "w", encoding='utf-8') as manifest_file:
         json.dump(manifest_data, manifest_file, indent=4)
          
     print("Thunderstore Manifest created at " + path)    
 
-def create_readme_txt(modinfo, builds_dir):
+def create_readme_txt(modinfo, builds_dir,):
     txt = f"""\
 Thanks for playing with {modinfo["name"]}!
 {modinfo["description"]}
@@ -421,7 +481,7 @@ This mod was made with Hatchery {hatchery_version}
         
     print("Readme created at " + path)
     
-def create_readme_md(modinfo, builds_dir, adds_fish, adds_colors, input_dir, colors_input_dir, duplicate_colors):
+def create_readme_md(modinfo, builds_dir, adds_fish, adds_colors, input_dir, colors_input_dir, duplicate_colors, ts_dir):
     content = f"""\
 ## {modinfo["name"]}  
 {modinfo["description"]}  \n
@@ -444,7 +504,7 @@ def create_readme_md(modinfo, builds_dir, adds_fish, adds_colors, input_dir, col
 This mod was created by {modinfo["authors"]} using [Hatchery]({hatchery_link}) v{hatchery_version}
 
 """
-    path = builds_dir + modinfo["name"] +"\\README.md"
+    path = builds_dir + ts_dir +"\\README.md"
     with open(path, "w", encoding='utf-8') as readme_file:
         readme_file.write(content.strip())
     print("Readme created at " + path)
@@ -578,7 +638,7 @@ def zip_for_ts(modinfo, builds_dir):
     return output_filename
 
 # Code stuff
-def create_main_gd(modinfo, fish_list, colors_list):
+def create_main_gd(modinfo, fish_list, colors_list, titles_list):
     content = f"""
 # Generated by Hatchery {hatchery_version}, {hatchery_link}
 extends Node
@@ -597,6 +657,9 @@ func _ready():
         else:
             folder = "primary"
         content += f"""    Lure.add_content(ID, "{color}", "mod://scenes/colors/{folder}/{color}.tres") \n"""
+    
+    for title in titles_list:
+        content += f"""    Lure.add_content(ID, "{title}", "mod://scenes/titles/{title}.tres") \n"""
     
     path = default_mods_dir + modinfo["id"]
     os.makedirs(path, exist_ok=True)
@@ -648,10 +711,18 @@ def new_mod():
     if add_colors_to_mod_choice == "Yes":
         colors_list, colors_input_dir, duplicate_colors = new_colors(True, modinfo)
         adds_colors = True
+    
+    titles_list = []
+    adds_titles = False
+    
+    add_titles_to_mod_choice = multi_choice("Would you like to add titles to your mod?", ["Yes", "No"])
+    if add_titles_to_mod_choice == "Yes":
+        titles_list = new_titles(True, modinfo)
+        adds_titles = True
         
     create_main_class_choice = multi_choice("Would you like to generate the main class of your mods code?", ["Yes", "No"])
     if create_main_class_choice == "Yes":
-        create_main_gd(modinfo, fish_list, colors_list)
+        create_main_gd(modinfo, fish_list, colors_list, titles_list)
     
     add_image_choice = multi_choice("Would you like to add an icon to your mod?", ["Yes, for TackleBox and Thunderstore", "Yes, only tackleBox", "Yes, only for Thunderstore", "No"])
     tb_img = False
@@ -678,26 +749,31 @@ def new_mod():
         if fill_assets_choice == "Yes":
             fill_assets(modinfo, fish_list)
     
+    if adds_fish or adds_colors or adds_titles:
+            needs_lure = True
+    
     builds_dir = default_builds_dir 
     os.makedirs(builds_dir + modinfo["id"], exist_ok=True)
     
     # Create stuff for inside the mod
-    create_mod_manifest(modinfo, builds_dir, adds_fish, adds_colors)
+    create_mod_manifest(modinfo, builds_dir, needs_lure)
     create_readme_txt(modinfo, builds_dir)
     
     # Create stuff for ts
     thunderstore_choice = multi_choice("Would you like to generate files for uploading to Thunderstore?", ["Yes", "No"])
+    ts_dir = modinfo["name"].replace(" ", "_") + f"-v{modinfo["version"]}"
     if thunderstore_choice == "Yes":
-        os.makedirs(builds_dir + modinfo["name"] + "\\GDWeave\\", exist_ok=True)
-        create_ts_manifest(modinfo, builds_dir, adds_fish, adds_colors)
-        create_readme_md(modinfo, builds_dir, adds_fish, adds_colors, fish_data_dir, colors_input_dir, duplicate_colors)
+        os.makedirs(builds_dir + ts_dir + "\\GDWeave\\", exist_ok=True)
+    
+        create_ts_manifest(modinfo, builds_dir, needs_lure, ts_dir)
+        create_readme_md(modinfo, builds_dir, adds_fish, adds_colors, fish_data_dir, colors_input_dir, duplicate_colors, ts_dir)
         if ts_img:
-            shutil.copy2(image_dir, builds_dir + modinfo["name"] + "\\icon.png")
+            shutil.copy2(image_dir, builds_dir + ts_dir + "\\icon.png")
         
         changelog_choice = multi_choice("Would you like to create or update a changelog?", ["Yes", "No"])
         if changelog_choice == "Yes":
             changes = input_nl("What have you changed in this version?")
-            changelog_dir = builds_dir + modinfo["name"] + "\\CHANGELOG.md"
+            changelog_dir = builds_dir + ts_dir + "\\CHANGELOG.md"
             create_changelog_md(changes, modinfo, changelog_dir, os.path.isfile(changelog_dir))
 
     
@@ -715,7 +791,7 @@ def new_mod():
         
         shutil.copy2(pck_dir, builds_dir + f"\\{modinfo["id"]}\\{modinfo["id"]}.pck")
         if thunderstore_choice == "Yes":
-            shutil.copytree(builds_dir + modinfo["id"], f"{builds_dir}{modinfo["name"]}\\GDWeave\\mods\\{modinfo["id"]}", dirs_exist_ok=True)
+            shutil.copytree(builds_dir + modinfo["id"], f"{builds_dir}{ts_dir}\\GDWeave\\mods\\{modinfo["id"]}", dirs_exist_ok=True)
     
     zip_up_choice = multi_choice("Would you like to zip up your mod for sharing? (This will only work if you've added a .pck file!)", ["Yes", "No"])
     if zip_up_choice == "Yes":
@@ -769,16 +845,35 @@ def new_colors(making_mod, modinfo):
         print("This feature is not yet supported, Sorry!")
         new_colors(making_mod, modinfo)
 
+def new_titles(making_mod, modinfo):
+    title_list = []
+    csv_or_cli_choice = multi_choice("Would you like to generate new titles from a csv file, or answer some questions?", ["I have a .csv file", "answer questions"])
+    if csv_or_cli_choice == "I have a .csv file":
+        print("Please select a file path for the .csv file")
+        input_dir = prompt_file_path(default_title_input_dir)
+        if making_mod:
+            output_dir = current_directory + "\\mods\\" + modinfo["id"] + "\\scenes\\titles\\"
+        else:
+            print("Please select a path to output your title files")
+            output_dir = prompt_file_path(default_output_dir)
 
+        title_list = make_many_titles(input_dir, output_dir, modinfo)
+    else:
+        print("This feature is not yet supported, Sorry!")
+        new_titles(making_mod, modinfo)
+        
+    return title_list
 
 
 def main():
-    action = multi_choice(f"Welcome to the Hatchery v{hatchery_version}, what are you here for?", ["Create a new Mod", "Create new fish", "Create new colors"])
+    action = multi_choice(f"Welcome to the Hatchery v{hatchery_version}, what are you here for?", ["Create a new Mod", "Create new fish", "Create new colors", "Create new titles"])
     if action == "Create a new Mod":
         new_mod()
     if action == "Create new fish":
         new_fish(False, default_modinfo)
     if action == "Create new colors":
         new_colors(False, default_modinfo)
+    if action == "Create new titles":
+        new_titles(False, default_modinfo)
 
 main()
