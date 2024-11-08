@@ -40,6 +40,7 @@ Technically speaking, as a consequence of how I've designed the script, you can 
 If you'd like to use Hatchery for this purpose, simply add any of the data values you'd like to edit as a column in your csv.  
 This type of use will have easier-to-use options soon, for now, your items will still mostly be processed as if you're trying to create a fish or a cosmetic color.  
 Note, that `colors.csv` inputs support two additional entries used by Hatchery, `hex` and `alpha` which can be used to make editing the colors of cosmetics easier.  
+`fish.csv` inputs support an additional entry, `mod_loot_table` which can be a single string, or multiple values seperated by a comma (",").
 
 ### Things to avoid
 
