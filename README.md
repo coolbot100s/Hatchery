@@ -8,7 +8,7 @@ Check out [Fishing Expanded](https://github.com/coolbot100s/FishingExpanded), fo
 
 - Create functional mod files from a simple spreadsheet, no coding necessary.
 - Create mods from the command line by answering a few questions about your mod (coming soon™️)
-- Generate mod file templates including scenes and scripts.  
+- Generate mod file templates including resources and scripts.  
 - Generate asset templates to avoid misnamed assets and godot project corruption.  
 - Automatically create metadata for TackleBox, HLS, and Thunderstore.
 - Automatically generate a ReadMe file with info about the content you added to your mod.
@@ -23,6 +23,9 @@ Having trouble balancing your fish? Check out [this data sheet](https://docs.goo
 ### Cosmetic Colors
 You can now generate cosmetics via Hatchery!  
 Cosmetic colors can be generated completely from the `colors.csv` template with just a name and a Hex Code.  
+
+### Cosmetic Titles
+Cosmetic titles can be generated completely from the `titles.csv` template with just a name, description, and Title.
 
 ### Mod files
 
@@ -39,9 +42,8 @@ This type of use will have easier-to-use options soon, for now, your items will 
 Note, that `colors.csv` inputs support two additional entries used by Hatchery, `hex` and `alpha` which can be used to make editing the colors of cosmetics easier.  
 
 ### Things to avoid
+
 Empty cells in your `.csv` files will likely cause the generated files to be invalid.  
-Naming your project the same name as your id causes thunderstore building to catastrophically fail, if you want your project's name to be "ExampleMod" instead of "Example Mod" for instance, I recommend NOT generating thunderstore build files at all.  
-I will work to fix this in the next possible update.  
 
 ## What can Hatchery not do?  
 
@@ -51,7 +53,7 @@ Hatchery can not export your mod's `.pck` for you, don't worry, it's pretty easy
 
 ## How do I use Hatchery?
 
-Simply download from the latest [Release](https://github.com/coolbot100s/Hatchery/releases/tag/1.1.0), get it on Thunderstore, or clone [this repository](https://github.com/coolbot100s/Hatchery), and run `Hatchery.py`, your terminal will guide you through the rest.  
+Simply download from the latest [Release](https://github.com/coolbot100s/Hatchery/releases/), get it on [Thunderstore](https://thunderstore.io/c/webfishing/p/GardenGals/), or clone [this repository](https://github.com/coolbot100s/Hatchery), and run `Hatchery.py`, your terminal will guide you through the rest.  
 
 ## Links  
 
