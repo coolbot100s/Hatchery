@@ -841,7 +841,7 @@ def new_colors(making_mod, modinfo):
         if making_mod:
             output_dir = current_directory + "\\mods\\" + modinfo["id"] + "\\scenes\\colors\\"
         else:
-            print("Please select a path to output your fish files")
+            print("Please select a path to output your cosmetic files")
             output_dir = prompt_file_path(default_output_dir)
 
         duplicate_choice = multi_choice("Would you like to to create matching primary and secondary colors for any color without a category?", ["Yes", "No"])
