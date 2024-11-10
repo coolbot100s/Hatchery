@@ -262,7 +262,7 @@ def make_many_colors(input_dir, output_dir, making_mod, duplicate):
             else:
                 alpha = "1"
             if "hex" in data:
-                data["main_color"] = f"Color( {hex_to_rgb_decimal(data["hex"])}, {alpha} )"    
+                data["main_color"] = f"Color( {hex_to_rgb_decimal(data['hex'])}, {alpha} )"    
             # Duplicate all colors that do not specify a category, one primary, one secondary
             if duplicate and "category" not in row:
                 # Create primary color
@@ -408,7 +408,7 @@ def modinfo_from_json(info_dir):
         modinfo["ts_name"] = modinfo["name"].replace(" ", "_")  
     
     if "link" not in modinfo:
-        modinfo["link"] = ""
+        modinfo['link'] = ""
 
     return modinfo
 
@@ -490,7 +490,7 @@ def create_readme_md(modinfo, builds_dir, adds_fish, adds_colors, input_dir, col
 {modinfo["description"]}  \n
 """
     if modinfo["link"] and modinfo["link"] != "":
-        content += f"You can also find this mod at it's [Home Page]({modinfo["link"]})  \n"
+        content += f"You can also find this mod at it's [Home Page]({modinfo['link']})  \n"
   
 
     if adds_fish:
@@ -534,7 +534,7 @@ def create_fish_table(input_dir):
             reader = csv.DictReader(csvfile)
             for row in reader:
                 data = {**default_fish_values, **row}
-                content += f"| {data['item_name']} | <p>Location: {unsnakeify(data["loot_table"])}<br>Size: {data["average_size"]}<br>Tier: {str(int(data["tier"]) + 1)}</p>  |\n"
+                content += f"| {data['item_name']} | <p>Location: {unsnakeify(data['loot_table'])}<br>Size: {data['average_size']}<br>Tier: {str(int(data['tier']) + 1)}</p>  |\n"
     else:
         content += "| Image | Name | Data |\n"
         content += "| --- | --- | --- |\n"
@@ -542,7 +542,7 @@ def create_fish_table(input_dir):
             reader = csv.DictReader(csvfile)
             for row in reader:
                 data = {**default_fish_values, **row}
-                content += f"|  | {data['item_name']} | <p>Location: {unsnakeify(data["loot_table"])}<br>Size: {data["average_size"]}<br>Tier: {str(int(data["tier"]) + 1)}</p>  |\n"
+                content += f"|  | {data['item_name']} | <p>Location: {unsnakeify(data['loot_table'])}<br>Size: {data['average_size']}<br>Tier: {str(int(data['tier']) + 1)}</p>  |\n"
             
     content += """\n  
 </details>  \n
@@ -633,7 +633,7 @@ def zip_for_gh(modinfo, builds_dir):
 
 def zip_for_ts(modinfo, builds_dir):
     source_dir = builds_dir + modinfo["name"] 
-    output_dir = builds_dir + modinfo["name"].replace(" ", "_") + f"-v{modinfo["version"]}"
+    output_dir = builds_dir + modinfo["name"].replace(" ", "_") + f"-v{modinfo['version']}"
     output_filename = output_dir + ".zip"
     
     shutil.make_archive(output_dir, 'zip', source_dir)
@@ -680,7 +680,7 @@ def fill_assets(modinfo, fish_list):
         print(f"Source image not found: {default_example_image_dir}")
         return
     
-    assets_dir = current_directory + f"\\mods\\{modinfo["id"]}\\assets\\fish\\"
+    assets_dir = current_directory + f"\\mods\\{modinfo['id']}\\assets\\fish\\"
     
     for fish in fish_list:
         shutil.copy2(default_example_image_dir, assets_dir + fish + ".png")
@@ -749,11 +749,11 @@ def new_mod():
         image_dir = prompt_file_path(default_icon_dir)
         
     if tb_img:
-        shutil.copy2(image_dir, current_directory + f"\\mods\\{modinfo["id"]}\\icon.png")
+        shutil.copy2(image_dir, current_directory + f"\\mods\\{modinfo['id']}\\icon.png")
     
     
     if adds_fish:
-        os.makedirs(current_directory + f"\\mods\\{modinfo["id"]}\\assets\\fish", exist_ok=True)
+        os.makedirs(current_directory + f"\\mods\\{modinfo['id']}\\assets\\fish", exist_ok=True)
         fill_assets_choice = multi_choice("Would you like to populate your mod's assets folder with example sprites? This will ensure your assets are named correctly.", ["Yes", "No"])
         if fill_assets_choice == "Yes":
             fill_assets(modinfo, fish_list)
@@ -770,7 +770,7 @@ def new_mod():
     
     # Create stuff for ts
     thunderstore_choice = multi_choice("Would you like to generate files for uploading to Thunderstore?", ["Yes", "No"])
-    ts_dir = modinfo["name"].replace(" ", "_") + f"-v{modinfo["version"]}"
+    ts_dir = modinfo["name"].replace(" ", "_") + f"-v{modinfo['version']}"
     if thunderstore_choice == "Yes":
         os.makedirs(builds_dir + ts_dir + "\\GDWeave\\", exist_ok=True)
     
@@ -791,16 +791,16 @@ def new_mod():
     has_pck_choice = multi_choice("Now, to finalize your mod, you just need to export it using GoDot, would you like a tutorial?", ["Yes, please", "No, I have my mod's .pck"])
     if has_pck_choice == "Yes, please":
         print("Go to: https://github.com/coolbot100s/Hatchery/blob/main/TUTORIAL.md")
-        print(f"psst... your mod id is {modinfo["id"]}")
+        print(f"psst... your mod id is {modinfo['id']}")
     
     copy_pck_choice = multi_choice("Would you like to copy your .pck to your builds?", ["Yes", "No"])    
     if copy_pck_choice == "Yes":
         print("Please select a file path for the .pck file")
-        pck_dir = prompt_file_path(current_directory + f"\\{modinfo["id"]}" + ".pck")
+        pck_dir = prompt_file_path(current_directory + f"\\{modinfo['id']}" + ".pck")
         
-        shutil.copy2(pck_dir, builds_dir + f"\\{modinfo["id"]}\\{modinfo["id"]}.pck")
+        shutil.copy2(pck_dir, builds_dir + f"\\{modinfo['id']}\\{modinfo['id']}.pck")
         if thunderstore_choice == "Yes":
-            shutil.copytree(builds_dir + modinfo["id"], f"{builds_dir}{ts_dir}\\GDWeave\\mods\\{modinfo["id"]}", dirs_exist_ok=True)
+            shutil.copytree(builds_dir + modinfo["id"], f"{builds_dir}{ts_dir}\\GDWeave\\mods\\{modinfo['id']}", dirs_exist_ok=True)
     
     zip_up_choice = multi_choice("Would you like to zip up your mod for sharing? (This will only work if you've added a .pck file!)", ["Yes", "No"])
     if zip_up_choice == "Yes":
