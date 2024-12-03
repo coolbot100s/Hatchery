@@ -11,7 +11,7 @@ ikwid = False # Automatically run the script with the selected options... automa
 
 # Important shit
 hatchery_link = "https://github.com/coolbot100s/Hatchery"
-hatchery_version = "1.3.2"
+hatchery_version = "1.3.3"
 
 ts_supported_gd_weave = "NotNet-GDWeave-2.0.13"
 ts_supported_lure = "Sulayre-Lure-4.2.0"
