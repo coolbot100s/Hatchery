@@ -758,6 +758,7 @@ def new_mod():
         if fill_assets_choice == "Yes":
             fill_assets(modinfo, fish_list)
     
+    needs_lure = True
     if adds_fish or adds_colors or adds_titles:
             needs_lure = True
     
